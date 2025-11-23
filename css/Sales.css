@@ -1,0 +1,572 @@
+
+
+/* CSS Custom Properties (Variables) - Edit these for quick theming (matches dashboard/product) */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --sidebar-bg: #2f3542;
+    --sidebar-hover: #57606f;
+    --tile-bg: #ffffff;
+    --tile-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --text-dark: #333333;
+    --text-light: #666666;
+    --accent-blue: #667eea;
+    --alert-red: #e74c3c;
+    --success-green: #2ecc71;
+    --warning-orange: #f39c12;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: #f8f9fa; /* Light gray for subtle depth */
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Layout: Flexbox for sidebar + main */
+body {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar (matches dashboard/product exactly) */
+.sidebar {
+    width: 250px;
+    background: var(--sidebar-bg);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transition: var(--transition);
+    padding: var(--spacing-lg) 0;
+}
+
+.sidebar .logo {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    padding: var(--spacing-sm) 0;
+}
+
+.sidebar .nav-links {
+    list-style: none;
+    flex: 1;
+}
+
+.sidebar .nav-links li {
+    margin: var(--spacing-sm) 0;
+}
+
+.sidebar .nav-links a {
+    color: #ddd;
+    text-decoration: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: block;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    font-size: 1rem;
+}
+
+.sidebar .nav-links a:hover,
+.sidebar .nav-links a.active {
+    background: var(--sidebar-hover);
+    color: white;
+    transform: translateX(5px); /* Subtle slide on hover */
+}
+
+.sidebar-footer {
+    padding: var(--spacing-md);
+    text-align: center;
+    border-top: 1px solid #444;
+}
+
+.sidebar-footer form {
+    width: 100%;
+}
+
+.sidebar-footer button {
+    width: 100%;
+    padding: var(--spacing-sm);
+    background: var(--sidebar-hover);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.sidebar-footer button:hover {
+    background: #747d8c;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 250px; /* Offset for fixed sidebar */
+    flex: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto; /* Scroll only main content if needed */
+    min-height: 100vh;
+    background: white;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid #eee;
+}
+
+.topbar h1 {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Settings Menu/Dropdown */
+.settings-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.settings-btn {
+    background: var(--sidebar-bg);
+    color: white;
+    border: none;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+}
+
+.settings-btn:hover {
+    background: var(--sidebar-hover);
+    transform: rotate(90deg); /* Fun icon spin on hover */
+}
+
+.settings-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--tile-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--tile-shadow);
+    min-width: 200px;
+    z-index: 1001;
+    border: 1px solid #eee;
+    overflow: hidden;
+}
+
+.settings-menu.show .settings-dropdown {
+    display: block;
+}
+
+.settings-dropdown button {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-md);
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1rem;
+    color: var(--text-dark);
+}
+
+.settings-dropdown button:hover {
+    background: var(--accent-blue);
+    color: white;
+}
+
+/* Specific Button Styles */
+.add-btn {
+    border-bottom: 1px solid #eee; /* Separator if more buttons added */
+}
+
+.add-btn:hover {
+    background: var(--success-green);
+}
+/* 🔹 Action Buttons Container */
+.action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* space between buttons */
+}
+
+/* 🔹 Common Style for Action Buttons */
+.action button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #fff;
+    transition: var(--transition);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔵 Update Button */
+.update-btn {
+    background: var(--accent-blue); /* Blue theme color */
+}
+
+.update-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+    box-shadow: 0 5px 12px rgba(0, 91, 187, 0.3);
+}
+
+/* 🔴 Delete Button */
+.delete-btn {
+    background: var(--alert-red); /* Red alert color */
+}
+
+.delete-btn:hover {
+    background: #b52a36;
+    transform: scale(1.05);
+    box-shadow: 0 5px 12px rgba(181, 42, 54, 0.3);
+}
+
+/* 📱 Responsive: smaller buttons on narrow screens */
+@media (max-width: 768px) {
+    .action button {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+}
+/* Sales Table */
+.sales-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--tile-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--tile-shadow);
+    overflow: hidden;
+    table-layout: fixed; /* Fixed columns for consistency */
+    margin-bottom: var(--spacing-lg);
+}
+
+.sales-table thead {
+    background: var(--sidebar-bg);
+    color: white;
+}
+
+.sales-table th,
+.sales-table td {
+    padding: var(--spacing-sm);
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.95rem;
+}
+
+.sales-table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+}
+
+.sales-table tbody tr:nth-child(even) {
+    background: #f8f9fa; /* Striped rows */
+}
+
+.sales-table tbody tr:hover {
+    background: var(--accent-blue);
+    color: white;
+    transition: var(--transition);
+}
+
+.sales-table tbody tr:hover td {
+    color: white;
+}
+
+ /* Column Widths (balanced for sales data + actions) */
+.sales-table th:nth-child(1), .sales-table td:nth-child(1) { width: 8%; }  /* Sale ID */
+.sales-table th:nth-child(2), .sales-table td:nth-child(2) { width: 10%; } /* Client ID */
+.sales-table th:nth-child(3), .sales-table td:nth-child(3) { width: 10%; } /* Product ID */
+.sales-table th:nth-child(4), .sales-table td:nth-child(4) { width: 8%; }  /* User ID */
+.sales-table th:nth-child(  5), .sales-table td:nth-child(5) { width: 8%; }  /* Quantity */
+.sales-table th:nth-child(6), .sales-table td:nth-child(6) { width: 12%; } /* Unit Price */
+.sales-table th:nth-child(7), .sales-table td:nth-child(7) { width: 12%; } /* Total Amount */
+.sales-table th:nth-child(8), .sales-table td:nth-child(8) { width: 12%; } /* Sale Date */
+.sales-table th:nth-child(9), .sales-table td:nth-child(9) { width: 20%; } /* Actions */
+
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px); /* Subtle blur for focus */
+}
+
+.modal-content {
+    background: var(--tile-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    box-shadow: var(--tile-shadow);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-content h3 {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-dark);
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.modal-content h4 {
+    margin: var(--spacing-lg) 0 var(--spacing-sm);
+    color: var(--accent-blue);
+    font-size: 1.2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.modal-content label {
+    font-weight: 500;
+    color: var(--text-light);
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.modal-content input,
+.modal-content select {
+    padding: var(--spacing-sm);
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.modal-content input:focus,
+.modal-content select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.modal-content input[readonly] {
+    background: #f8f9fa;
+    border-color: var(--success-green);
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.modal-content button[type="submit"] {
+    background: var(--primary-gradient);
+    color: white;
+    padding: var(--spacing-sm);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    margin-top: var(--spacing-sm);
+}
+
+.modal-content button[type="submit"]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.modal-content button[type="button"] {
+    background: var(--text-light);
+    color: white;
+    padding: var(--spacing-sm);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.modal-content button[type="button"]:hover {
+    background: var(--alert-red);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%); /* Hidden off-screen */
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: var(--spacing-md);
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    /* Table: Horizontal scroll wrapper */
+    .sales-table-wrapper {
+        overflow-x: auto;
+        border-radius: var(--border-radius);
+        box-shadow: var(--tile-shadow);
+    }
+
+    .sales-table {
+        min-width: 600px; /* Ensures scroll on small screens */
+        margin: 0;
+    }
+
+    .sales-table th,
+    .sales-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: var(--spacing-md);
+    }
+
+    /* Hamburger Button (add to HTML topbar) */
+    .hamburger {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-dark);
+        padding: 0.5rem;
+        align-self: flex-start;
+    }
+
+    .settings-dropdown {
+        right: auto;
+        left: 0;
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sales-table th,
+    .sales-table td {
+        font-size: 0.8rem;
+    }
+
+    .modal-content h3 {
+        font-size: 1.3rem;
+    }
+
+    .modal-content h4 {
+        font-size: 1.1rem;
+    }
+}
+
+/* Dark Mode Support (optional, matches dashboard/product) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --tile-bg: #2d3748;
+        --text-dark: #e2e8f0;
+        --text-light: #a0aec0;
+        --sidebar-bg: #1a202c;
+    }
+
+    body {
+        background: #1a202c;
+    }
+
+    .main-content,
+    .sales-table,
+    .modal-content,
+    .settings-dropdown {
+        background: var(--tile-bg);
+        color: var(--text-dark);
+    }
+
+    .sales-table thead {
+        background: var(--sidebar-bg);
+    }
+
+    .sales-table tbody tr:nth-child(even) {
+        background: #4a5568;
+    }
+
+    .sales-table th,
+    .sales-table td {
+        border-bottom-color: #4a5568;
+    }
+
+    .sales-table tbody tr:hover {
+        background: var(--accent-blue);
+        color: white;
+    }
+
+    .modal-content input,
+    .modal-content select {
+        background: #4a5568;
+        border-color: #718096;
+        color: var(--text-dark);
+    }
+
+    .modal-content input[readonly] {
+        background: #4a5568;
+        border-color: var(--success-green);
+    }
+
+    .modal-content h4 {
+        border-bottom-color: #4a5568;
+    }
+}

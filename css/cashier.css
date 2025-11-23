@@ -1,0 +1,424 @@
+/* CSS Custom Properties (Variables) - Edit these for quick theming */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --sidebar-bg: #2f3542;
+    --sidebar-hover: #57606f;
+    --tile-bg: #ffffff;
+    --tile-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --text-dark: #333333;
+    --text-light: #666666;
+    --accent-blue: #667eea;
+    --alert-red: #e74c3c;
+    --success-green: #2ecc71;
+    --warning-orange: #f39c12;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: #f8f9fa;
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: var(--sidebar-bg);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transition: var(--transition);
+    padding: var(--spacing-lg) 0;
+}
+
+.sidebar .logo {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding: var(--spacing-sm) 0;
+}
+
+.sidebar .nav-links {
+    list-style: none;
+    flex: 1;
+}
+
+.sidebar .nav-links li {
+    margin: var(--spacing-sm) 0;
+}
+
+.sidebar .nav-links a {
+    color: #ddd;
+    text-decoration: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: block;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    font-size: 1rem;
+}
+
+.sidebar .nav-links a:hover,
+.sidebar .nav-links a.active {
+    background: var(--sidebar-hover);
+    color: white;
+    transform: translateX(5px);
+}
+
+.sidebar-footer {
+    padding: var(--spacing-md);
+    text-align: center;
+    border-top: 1px solid #444;
+}
+
+.sidebar-footer button {
+    width: 100%;
+    padding: var(--spacing-sm);
+    background: var(--sidebar-hover);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.sidebar-footer button:hover {
+    background: #747d8c;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 250px;
+    flex: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    min-height: 100vh;
+    background: white;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid #eee;
+}
+
+.topbar h1 {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Settings Menu */
+.settings-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.settings-btn {
+    background: var(--sidebar-bg);
+    color: white;
+    border: none;
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+}
+
+.settings-btn:hover {
+    background: var(--sidebar-hover);
+    transform: rotate(90deg);
+}
+
+.settings-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: var(--tile-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--tile-shadow);
+    min-width: 200px;
+    z-index: 1001;
+    border: 1px solid #eee;
+    overflow: hidden;
+}
+
+.settings-menu.show .settings-dropdown {
+    display: block;
+}
+
+.settings-dropdown button {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-md);
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 1rem;
+    color: var(--text-dark);
+}
+
+.settings-dropdown button:hover {
+    background: var(--accent-blue);
+    color: white;
+}
+
+/* Sections */
+section {
+    margin-bottom: var(--spacing-lg);
+    background: var(--tile-bg);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    box-shadow: var(--tile-shadow);
+}
+
+section h2 {
+    margin-bottom: var(--spacing-md);
+    color: var(--text-dark);
+    font-size: 1.5rem;
+}
+
+/* Tables */
+#itemTable,
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--tile-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--tile-shadow);
+    overflow: hidden;
+    margin-bottom: var(--spacing-md);
+}
+
+#itemTable thead,
+table thead {
+    background: var(--sidebar-bg);
+    color: white;
+}
+
+#itemTable th,
+#itemTable td,
+table th,
+table td {
+    padding: var(--spacing-sm);
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+}
+
+#itemTable tbody tr:nth-child(even),
+table tbody tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+#itemTable tbody tr:hover,
+table tbody tr:hover {
+    background: var(--accent-blue);
+    color: white;
+}
+
+#itemTable tbody tr:hover td,
+table tbody tr:hover td {
+    color: white;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+label {
+    font-weight: 500;
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+input,
+select,
+textarea {
+    padding: var(--spacing-sm);
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+button {
+    padding: var(--spacing-sm);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+    background: var(--primary-gradient);
+    color: white;
+}
+
+button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: var(--spacing-md);
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .hamburger {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-dark);
+        padding: 0.5rem;
+        align-self: flex-start;
+    }
+
+    .settings-dropdown {
+        right: auto;
+        left: 0;
+        min-width: 150px;
+    }
+
+    #itemTable,
+    table {
+        min-width: 600px;
+        margin: 0;
+    }
+
+    #itemTable th,
+    #itemTable td,
+    table th,
+    table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    section {
+        padding: var(--spacing-sm);
+    }
+}
+
+@media (max-width: 480px) {
+    #itemTable th,
+    #itemTable td,
+    table th,
+    table td {
+        font-size: 0.8rem;
+    }
+
+    section h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --tile-bg: #2d3748;
+        --text-dark: #e2e8f0;
+        --text-light: #a0aec0;
+        --sidebar-bg: #1a202c;
+    }
+
+    body {
+        background: #1a202c;
+    }
+
+    .main-content,
+    #itemTable,
+    table,
+    section,
+    .settings-dropdown {
+        background: var(--tile-bg);
+        color: var(--text-dark);
+    }
+
+    #itemTable thead,
+    table thead {
+        background: var(--sidebar-bg);
+    }
+
+    #itemTable tbody tr:nth-child(even),
+    table tbody tr:nth-child(even) {
+        background: #4a5568;
+    }
+
+    #itemTable th,
+    #itemTable td,
+    table th,
+    table td {
+        border-bottom-color: #4a5568;
+    }
+
+    input,
+    select,
+    textarea {
+        background: #4a5568;
+        border-color: #718096;
+        color: var(--text-dark);
+    }
+}

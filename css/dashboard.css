@@ -1,0 +1,234 @@
+/* CSS Custom Properties (Variables) - Edit these for quick theming */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --tile-bg: #ffffff;
+    --tile-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --text-dark: #333333;
+    --text-light: #666666;
+    --accent-blue: #667eea;
+    --alert-red: #e74c3c;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: #f8f9fa;
+    color: var(--text-dark);
+    line-height: 1.6;
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    min-height: 100vh;
+    background: white;
+     margin-left: 240px; /* Same as sidebar width */
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid #eee;
+}
+
+.topbar h1 {
+    font-size: 1.8rem;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+/* Tiles Section */
+.tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.tile {
+    background: var(--tile-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    text-align: center;
+    box-shadow: var(--tile-shadow);
+    transition: var(--transition);
+    position: relative;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.tile h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    margin-bottom: 0.5rem;
+}
+
+.tile p {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* Specific Tile Colors */
+.tile:nth-child(1) { border-top: 4px solid #3498db; }
+.tile:nth-child(2) { border-top: 4px solid #2ecc71; }
+.tile:nth-child(3) { border-top: 4px solid #f39c12; }
+.tile:nth-child(4) { border-top: 4px solid var(--alert-red); }
+
+/* Low Stock Tile Overrides */
+.tile.low-stock {
+    background: linear-gradient(135deg, var(--alert-red), #c0392b) !important;
+    color: white;
+}
+
+.tile.low-stock h3,
+.tile.low-stock p {
+    color: white;
+}
+
+.low-stock-alert {
+    display: block;
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-left: 3px solid white;
+}
+
+.tile.low-stock div {
+    max-height: 100px;
+    overflow-y: auto;
+    width: 100%;
+    margin-top: var(--spacing-sm);
+}
+
+.tile.low-stock div::-webkit-scrollbar {
+    width: 4px;
+}
+
+.tile.low-stock div::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 2px;
+}
+
+/* Chart Section */
+.chart-section {
+    background: var(--tile-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--tile-shadow);
+    margin-bottom: var(--spacing-lg);
+}
+
+.chart-section h2 {
+    margin-bottom: var(--spacing-md);
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#stockChart {
+    max-height: 400px;
+    width: 100%;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .main-content {
+        padding: var(--spacing-md);
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+
+    .tiles {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+
+    .tile {
+        height: 180px;
+        padding: var(--spacing-md);
+    }
+
+    .tile h3 {
+        font-size: 2rem;
+    }
+
+    .hamburger {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--text-dark);
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .tile h3 {
+        font-size: 1.8rem;
+    }
+
+    .chart-section {
+        padding: var(--spacing-sm);
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --tile-bg: #2d3748;
+        --text-dark: #e2e8f0;
+        --text-light: #a0aec0;
+    }
+
+    body {
+        background: #1a202c;
+    }
+
+    .main-content,
+    .chart-section,
+    .tile {
+        background: var(--tile-bg);
+        color: var(--text-dark);
+    }
+}

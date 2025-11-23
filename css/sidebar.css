@@ -1,0 +1,162 @@
+/* ===========================
+   Root Variables
+=========================== */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --sidebar-bg: #2f3542;
+    --sidebar-hover: #57606f;
+    --sidebar-active: #3b3f47;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+}
+
+/* ===========================
+   Base & Reset
+=========================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background: #f8f9fa;
+    color: #333;
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ===========================
+   Sidebar
+=========================== */
+.sidebar {
+    width: 250px;
+    background: var(--sidebar-bg);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    padding: var(--spacing-lg) 0;
+    transition: var(--transition);
+}
+
+.sidebar .logo {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* ===========================
+   Navigation Links
+=========================== */
+.nav-links {
+    list-style: none;
+    flex: 1;
+    padding: 0;
+}
+
+.nav-links li {
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.nav-links a {
+    display: block;
+    color: #ddd;
+    text-decoration: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: var(--sidebar-hover);
+    color: #fff;
+    transform: translateX(5px);
+}
+
+/* ===========================
+   Dropdown Menu
+=========================== */
+/* Dropdown Menu */
+.dropdown-menu {
+    display: none;
+    list-style: none;
+    padding-left: 20px;
+    margin-top: 5px;
+}
+
+.dropdown-menu li a {
+    font-size: 0.95rem;
+    padding: 8px 15px;
+    background: #3b3f47;
+    border-radius: 5px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.dropdown.open .dropdown-menu {
+    display: block;
+}
+
+.dropdown-toggle {
+    cursor: pointer;
+}
+
+.dropdown-toggle:hover {
+    background-color: #57606f;
+}
+
+
+/* ===========================
+   Sidebar Footer
+=========================== */
+.sidebar-footer {
+    padding: var(--spacing-md);
+    text-align: center;
+    border-top: 1px solid #444;
+}
+
+.sidebar-footer button {
+    width: 100%;
+    padding: var(--spacing-sm);
+    background: var(--sidebar-hover);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.sidebar-footer button:hover {
+    background: #747d8c;
+}
+
+
+/* ===========================
+   Mobile Sidebar
+=========================== */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.active {
+        transform: translateX(0);
+    }
+}
+
+
