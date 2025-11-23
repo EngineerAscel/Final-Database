@@ -5,6 +5,7 @@ $navItems = [
     ['href' => 'cashier-dashboard.php', 'label' => 'Dashboard', 'icon' => 'layout-dashboard'],
     ['href' => 'cashier-items.php', 'label' => 'Products', 'icon' => 'package'],
     ['href' => 'cashier-payments.php', 'label' => 'Sales Records', 'icon' => 'credit-card'],
+    ['href' => 'cashier-requests.php', 'label' => ' Purchase status', 'icon' => 'list-check'],
 ];
 
 if (!defined('CASHIER_SIDEBAR_STYLES')) {
