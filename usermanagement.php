@@ -171,16 +171,48 @@ button[disabled] { opacity: 0.5; cursor: not-allowed; }
                     </select>
                 </div>
 
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">Password</label>
-                    <input type="password" id="password" name="password" required class="input-style p-3 rounded-xl">
-                </div>
-                <div>
-                    <label class="block text-sm text-gray-400 mb-1">Confirm Password</label>
-                    <input type="password" id="confirm_pass" name="confirm_pass" required class="input-style p-3 rounded-xl">
-                    <div id="confirmError" style="display:none" class="text-red-400 text-sm font-semibold mt-2">❌ Passwords do not match!</div>
-                </div>
+               <div class="relative">
+    <label class="block text-sm text-gray-400 mb-1">Password</label>
+    <input type="password" id="password" name="password" required 
+           class="input-style p-3 rounded-xl w-full pr-16">
 
+    <button type="button"
+        onclick="togglePassword('password', this)"
+        class="absolute right-3 top-10 text-gray-400 text-sm">
+        Show
+    </button>
+</div>
+
+<div class="relative mt-3">
+    <label class="block text-sm text-gray-400 mb-1">Confirm Password</label>
+    <input type="password" id="confirm_pass" name="confirm_pass" required 
+           class="input-style p-3 rounded-xl w-full pr-16">
+
+    <button type="button"
+        onclick="togglePassword('confirm_pass', this)"
+        class="absolute right-3 top-10 text-gray-400 text-sm">
+        Show
+    </button>
+
+    <div id="confirmError" style="display:none" 
+         class="text-red-400 text-sm font-semibold mt-2">
+         ❌ Passwords do not match!
+    </div>
+</div>
+
+<script>
+function togglePassword(id, btn) {
+    const input = document.getElementById(id);
+
+    if (input.type === "password") {
+        input.type = "text";
+        btn.textContent = "Hide";
+    } else {
+        input.type = "password";
+        btn.textContent = "Show";
+    }
+}
+</script>
                 <div class="md:col-span-2">
                     <div id="message" style="display:none" class="border border-gray-700 bg-gray-800/50 rounded-xl p-4 text-sm text-gray-300">
                         <p class="mb-2 text-gray-400">Password must contain:</p>
