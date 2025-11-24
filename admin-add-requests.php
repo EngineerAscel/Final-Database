@@ -163,6 +163,9 @@ $pendingCount = $pendingRes ? (int)$pendingRes->fetch_assoc()['total'] : 0;
     <?php endif; ?>
 
     <section class="bg-gray-900 p-6 rounded-2xl shadow-2xl overflow-x-auto">
+         <header class="flex items-center justify-between mb-4 border-b border-gray-800 pb-2">
+        <h2 class="text-xl font-semibold text-white">Sales Requests to Add Products Manually</h2>
+    </header>
         <div class="rounded-xl border border-gray-800">
             <table class="min-w-full divide-y divide-gray-800 req-table">
                 <thead class="bg-gray-800">
@@ -254,7 +257,49 @@ $pendingCount = $pendingRes ? (int)$pendingRes->fetch_assoc()['total'] : 0;
         </div>
     </div>
 </div>
-
+<section class="bg-gray-900 p-6 rounded-2xl shadow-2xl overflow-x-auto">
+    <header class="flex items-center justify-between mb-4 border-b border-gray-800 pb-2">
+        <h2 class="text-xl font-semibold text-white">Sales Requests to Add Products from Supplier</h2>
+    </header>
+    <div class="rounded-xl border border-gray-800 p-4">
+        <?php
+        // Fetch only pending requests
+        $salesRequests = $conn->query("SELECT * FROM product_add_requests WHERE status='pending' ORDER BY id DESC");
+        if ($salesRequests && $salesRequests->num_rows > 0):
+        ?>
+            <ul class="space-y-3">
+                <?php while($sr = $salesRequests->fetch_assoc()): ?>
+                    <li class="flex justify-between items-center bg-gray-800 rounded-xl p-3 border border-gray-700 hover:bg-gray-700 transition-colors">
+                        <div>
+                            <p class="text-white font-medium"><?= htmlspecialchars($sr['productName']) ?></p>
+                            <p class="text-gray-400 text-sm">
+                                Category: <?= htmlspecialchars($sr['category'] ?: 'N/A') ?> • 
+                                Supplier ID: <?= htmlspecialchars($sr['supplierID'] ?: 'N/A') ?> • 
+                                Price: ₱<?= number_format((float)$sr['price'], 2) ?>
+                            </p>
+                        </div>
+                        <div class="flex gap-2">
+                            <!-- Approve / Assign Product button -->
+                            <form method="POST">
+                                <input type="hidden" name="req_id" value="<?= $sr['id'] ?>">
+                                <input type="hidden" name="action" value="approve">
+                                <button type="submit" class="btn btn-approve text-sm px-4 py-2">Add Product</button>
+                            </form>
+                            <!-- Reject button -->
+                            <form method="POST">
+                                <input type="hidden" name="req_id" value="<?= $sr['id'] ?>">
+                                <input type="hidden" name="action" value="reject">
+                                <button type="submit" class="btn btn-reject text-sm px-4 py-2">Reject</button>
+                            </form>
+                        </div>
+                    </li>
+                <?php endwhile; ?>
+            </ul>
+        <?php else: ?>
+            <p class="text-gray-400 text-center py-6">No pending sales requests at the moment.</p>
+        <?php endif; ?>
+    </div>
+</section>
 <script>
 // fetch details via AJAX-like (we'll embed data into JS map to avoid extra requests)
 const requests = {};

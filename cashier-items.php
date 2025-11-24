@@ -225,7 +225,7 @@ if ($isAjax) {
 include "db.php";
 include "cashier-sidebar.php";
 
-$categories = ["All Items", "Engine & Transmission", "Braking System", "Suspension & Steering", "Electrical & Lighting", "Tires & Wheels"];
+$categories = ["All Items", "Engine & Transmission", "Breaking System", "Suspension & Steering", "Electrical & Lightning", "Tires and Wheels"];
 $selectedCategory = $_GET['category'] ?? 'All Items';
 $limit = 8;
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
