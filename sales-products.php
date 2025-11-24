@@ -588,15 +588,30 @@ function toggleModal(id, show) {
     }
 }
 
-function openUpdateModal(id, name, cat, price, qty, sup){
+function openUpdateModal(id, name, cat, price, qty, sup) {
     toggleModal('updateProductModal', true);
 
     document.getElementById('updateID').value = id;
     document.getElementById('updateName').value = name;
-    document.getElementById('updateCategory').value = cat;
     document.getElementById('updatePrice').value = price;
     document.getElementById('updateStock').value = qty;
     document.getElementById('updateSupplier').value = sup;
+
+    const select = document.getElementById('updateCategory');
+
+    // Check if option exists
+    let exists = [...select.options].some(o => o.value === cat);
+
+    // If not found → add automatically
+    if (!exists) {
+        let opt = document.createElement("option");
+        opt.value = cat;
+        opt.textContent = cat + "";
+        select.appendChild(opt);
+    }
+
+    // Finally select it
+    select.value = cat;
 
     originalData = { name, cat, price, qty, sup };
 }

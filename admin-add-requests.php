@@ -10,11 +10,11 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['rol
 
 $flash = '';
 
-// Approve / Reject handlers (POST)
+// Approve / Reject / Delete handlers (POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && isset($_POST['req_id'])) {
         $req_id = intval($_POST['req_id']);
-        $action = $_POST['action']; // 'approve' or 'reject'
+        $action = $_POST['action']; // 'approve', 'reject', or 'delete'
 
         // fetch request
         $stmt = $conn->prepare("SELECT * FROM product_add_requests WHERE id = ?");
@@ -23,65 +23,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $req = $stmt->get_result()->fetch_assoc();
         $stmt->close();
 
-        if ($action === 'delete') {
-        $del = $conn->prepare("DELETE FROM product_add_requests WHERE id = ?");
-        $del->bind_param("i", $req_id);
-        if ($del->execute()) {
-            $flash = "Request #{$req_id} has been deleted.";
-        } else {
-            $flash = "Failed to delete request #{$req_id}.";
-        }
-        $del->close();
-        }   
-
         if (!$req) {
             $flash = "Request not found.";
         } else {
-            if ($action === 'approve') {
-                // Insert to products
+            if ($action === 'delete') {
+                $del = $conn->prepare("DELETE FROM product_add_requests WHERE id = ?");
+                $del->bind_param("i", $req_id);
+                if ($del->execute()) {
+                    $flash = "Request #{$req_id} has been deleted.";
+                } else {
+                    $flash = "Failed to delete request #{$req_id}.";
+                }
+                $del->close();
+            }
+            elseif ($action === 'approve') {
                 $pname = $req['productName'];
                 $pcat = $req['category'];
                 $pprice = floatval($req['price']);
                 $pqty = intval($req['stockQuantity']);
                 $psup = intval($req['supplierID']);
-                $imgPath = $req['imagePath']; // may be null
+                $imgPath = $req['imagePath'] ?? '';
 
-                // If an image exists in add_requests folder, move it to uploads/
+                // Move image if exists
                 if (!empty($imgPath) && file_exists($imgPath)) {
                     $uploadsDir = "uploads/";
                     if (!is_dir($uploadsDir)) mkdir($uploadsDir, 0777, true);
                     $base = basename($imgPath);
                     $newPath = $uploadsDir . $base;
-                    // If destination already exists, add timestamp
                     if (file_exists($newPath)) $newPath = $uploadsDir . time() . '_' . $base;
                     if (@rename($imgPath, $newPath)) {
                         $imgPathToSave = $newPath;
                     } else {
-                        // fallback: keep original path if move fails
                         $imgPathToSave = $imgPath;
                     }
                 } else {
                     $imgPathToSave = "";
                 }
 
-                // insert into products
-                $insert = $conn->prepare("INSERT INTO products (productsImg, productName, category, price, stockQuantity,   
-                supplierID, dateAdded) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-                $insert->bind_param("sssdis", $imgPathToSave, $pname, $pcat, $pprice, $pqty, $psup);
-                if ($insert->execute()) {
-                    // mark request approved
-                    $upd = $conn->prepare("UPDATE product_add_requests SET status = 'approved' WHERE id = ?");
-                    $upd->bind_param("i", $req_id);
-                    $upd->execute();
-                    $upd->close();
-
-                    $flash = "Request #{$req_id} approved and product added.";
+                // Check if product already exists in products table
+                $checkProd = $conn->prepare("SELECT productID, stockQuantity FROM products WHERE productName=? AND supplierID=?");
+                $checkProd->bind_param("si", $pname, $psup);
+                $checkProd->execute();
+                $prodRes = $checkProd->get_result();
+                
+                if ($prodRes->num_rows > 0) {
+                    // Update existing product stock
+                    $prod = $prodRes->fetch_assoc();
+                    $newStock = $prod['stockQuantity'] + $pqty;
+                    $updProd = $conn->prepare("UPDATE products SET stockQuantity=?, category=?, price=?, productsImg=? WHERE productID=?");
+                    $updProd->bind_param("isdis", $newStock, $pcat, $pprice, $imgPathToSave, $prod['productID']);
+                    if ($updProd->execute()) {
+                        // mark request approved
+                        $updReq = $conn->prepare("UPDATE product_add_requests SET status='approved' WHERE id=?");
+                        $updReq->bind_param("i", $req_id);
+                        $updReq->execute();
+                        $updReq->close();
+                        $flash = "Request #{$req_id} approved and product stock updated.";
+                    } else {
+                        $flash = "Failed to update existing product stock: " . $updProd->error;
+                    }
+                    $updProd->close();
                 } else {
-                    $flash = "Failed to insert product: " . $conn->error;
+                    // Insert new product
+                    $insert = $conn->prepare("INSERT INTO products (productsImg, productName, category, price, stockQuantity, supplierID, dateAdded) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+                    $insert->bind_param("sssdis", $imgPathToSave, $pname, $pcat, $pprice, $pqty, $psup);
+                    if ($insert->execute()) {
+                        $updReq = $conn->prepare("UPDATE product_add_requests SET status='approved' WHERE id=?");
+                        $updReq->bind_param("i", $req_id);
+                        $updReq->execute();
+                        $updReq->close();
+                        $flash = "Request #{$req_id} approved and product added.";
+                    } else {
+                        $flash = "Failed to insert new product: " . $conn->error;
+                    }
+                    $insert->close();
                 }
-                $insert->close();
-            } elseif ($action === 'reject') {
-                $upd = $conn->prepare("UPDATE product_add_requests SET status = 'rejected' WHERE id = ?");
+                $checkProd->close();
+            }
+            elseif ($action === 'reject') {
+                $upd = $conn->prepare("UPDATE product_add_requests SET status='rejected' WHERE id=?");
                 $upd->bind_param("i", $req_id);
                 if ($upd->execute()) {
                     $flash = "Request #{$req_id} rejected.";
@@ -94,18 +114,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Fetch all add requests (most recent first)
+// Fetch all add requests
 $res = $conn->query("SELECT * FROM product_add_requests ORDER BY id DESC");
 $requests = [];
 if ($res) {
-    while ($row = $res->fetch_assoc()) {
-        $requests[] = $row;
-    }
+    while ($row = $res->fetch_assoc()) $requests[] = $row;
 }
 $totalRequests = count($requests);
-$pendingRes = $conn->query("SELECT COUNT(*) AS total FROM product_add_requests WHERE status = 'pending'");
+$pendingRes = $conn->query("SELECT COUNT(*) AS total FROM product_add_requests WHERE status='pending'");
 $pendingCount = $pendingRes ? (int)$pendingRes->fetch_assoc()['total'] : 0;
-
+?>
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -164,7 +182,7 @@ $pendingCount = $pendingRes ? (int)$pendingRes->fetch_assoc()['total'] : 0;
 
     <section class="bg-gray-900 p-6 rounded-2xl shadow-2xl overflow-x-auto">
          <header class="flex items-center justify-between mb-4 border-b border-gray-800 pb-2">
-        <h2 class="text-xl font-semibold text-white">Sales Requests to Add Products Manually</h2>
+        <h2 class="text-xl font-semibold text-white">Sales Requests to Add Products </h2>
     </header>
         <div class="rounded-xl border border-gray-800">
             <table class="min-w-full divide-y divide-gray-800 req-table">
@@ -257,48 +275,7 @@ $pendingCount = $pendingRes ? (int)$pendingRes->fetch_assoc()['total'] : 0;
         </div>
     </div>
 </div>
-<section class="bg-gray-900 p-6 rounded-2xl shadow-2xl overflow-x-auto">
-    <header class="flex items-center justify-between mb-4 border-b border-gray-800 pb-2">
-        <h2 class="text-xl font-semibold text-white">Sales Requests to Add Products from Supplier</h2>
-    </header>
-    <div class="rounded-xl border border-gray-800 p-4">
-        <?php
-        // Fetch only pending requests
-        $salesRequests = $conn->query("SELECT * FROM product_add_requests WHERE status='pending' ORDER BY id DESC");
-        if ($salesRequests && $salesRequests->num_rows > 0):
-        ?>
-            <ul class="space-y-3">
-                <?php while($sr = $salesRequests->fetch_assoc()): ?>
-                    <li class="flex justify-between items-center bg-gray-800 rounded-xl p-3 border border-gray-700 hover:bg-gray-700 transition-colors">
-                        <div>
-                            <p class="text-white font-medium"><?= htmlspecialchars($sr['productName']) ?></p>
-                            <p class="text-gray-400 text-sm">
-                                Category: <?= htmlspecialchars($sr['category'] ?: 'N/A') ?> • 
-                                Supplier ID: <?= htmlspecialchars($sr['supplierID'] ?: 'N/A') ?> • 
-                                Price: ₱<?= number_format((float)$sr['price'], 2) ?>
-                            </p>
-                        </div>
-                        <div class="flex gap-2">
-                            <!-- Approve / Assign Product button -->
-                            <form method="POST">
-                                <input type="hidden" name="req_id" value="<?= $sr['id'] ?>">
-                                <input type="hidden" name="action" value="approve">
-                                <button type="submit" class="btn btn-approve text-sm px-4 py-2">Add Product</button>
-                            </form>
-                            <!-- Reject button -->
-                            <form method="POST">
-                                <input type="hidden" name="req_id" value="<?= $sr['id'] ?>">
-                                <input type="hidden" name="action" value="reject">
-                                <button type="submit" class="btn btn-reject text-sm px-4 py-2">Reject</button>
-                            </form>
-                        </div>
-                    </li>
-                <?php endwhile; ?>
-            </ul>
-        <?php else: ?>
-            <p class="text-gray-400 text-center py-6">No pending sales requests at the moment.</p>
-        <?php endif; ?>
-    </div>
+
 </section>
 <script>
 // fetch details via AJAX-like (we'll embed data into JS map to avoid extra requests)

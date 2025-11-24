@@ -14,6 +14,24 @@ require 'db.php';
 
 // Note: Keeping Add, Update, Delete handlers for completeness, though Update/Delete are not used in the UI.
 
+// Handle sales request from supplier items
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_from_supplier'])) {
+    $supplierID = intval($_POST['supplierID']);
+    $productName = $_POST['productName'];
+    $category = $_POST['category'] ?? '';
+    $price = floatval($_POST['price']);
+    $stockQty = intval($_POST['stockQuantity']);
+    $requestedBy = $_SESSION['username']; // Sales username
+
+    $stmt = $conn->prepare("INSERT INTO product_add_requests (productName, category, price, stockQuantity, supplierID, requestedBy, status, dateRequested) VALUES (?, ?, ?, ?, ?, ?, 'pending', NOW())");
+    $stmt->bind_param("ssdiis", $productName, $category, $price, $stockQty, $supplierID, $requestedBy);
+    if ($stmt->execute()) {
+        $flash = "Request for '$productName' sent successfully.";
+    } else {
+        $flash = "Failed to send request: " . $conn->error;
+    }
+    $stmt->close();
+}
 
 
 // ✅ Request NEW Item from Supplier (via the 'Request Item' button on the main table)
@@ -23,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_item'])) {
     $category      = $_POST['category'];
     $price         = floatval($_POST['price']);
     $stockQuantity = intval($_POST['stockQuantity']);
-    $requestedBy   = $_SESSION['userID'] ?? 0;
+    $requestedBy   = $_SESSION['username'] ?? 0;
     $status        = 'Pending';
 
     $imagePath = NULL;
@@ -426,44 +444,47 @@ function openSupplierItemsModal(supplierID, supplierName) {
  * Handles the "Request Stock" action for an item ALREADY in the system.
  */
 function requestStockForExistingItem(supplierID, productID, productName, category, price) {
-    const quantity = prompt(`Enter quantity to request for ad "${productName}" (Price: ₱${price}):`);
-    
+    if (!supplierID || !productID || !productName || !category || !price) {
+        alert("❌ Missing product data. Cannot request stock.");
+        return;
+    }
+
+    const quantity = prompt(`Enter quantity to request for "${productName}" (Price: ₱${parseFloat(price).toFixed(2)}):`);
+
     if (quantity === null || quantity.trim() === "" || isNaN(quantity) || parseInt(quantity) <= 0) {
         if (quantity !== null) alert("Please enter a valid quantity.");
         return;
     }
-    
+
     const stockQuantity = parseInt(quantity);
-    
-    // Send request to the AJAX endpoint
+
     fetch('ajax-get-supplier-items.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ 
             request_existing_stock: '1',
-            supplierID: supplierID,
-            productID: productID,
-            stockQuantity: stockQuantity,
-            productName: productName,
-            category: category,
-            price: price // Include price for the request table record
+            supplierID,
+            productID,
+            stockQuantity,
+            productName,
+            category,
+            price
         })
     })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
-        if(data.status === "success"){ 
-            alert(`✅ Request for ${stockQuantity} units of ${productName} sent to Admin for approval!`); 
+        if (data.status === 'success') {
+            alert(`✅ ${data.message}`);
         } else {
-            alert(`❌ Error sending request: ${data.message || 'Unknown error'}`); 
+            alert(`❌ Error: ${data.message || 'Unknown error'}`);
             console.error(data);
-        } 
+        }
     })
-    .catch(error => {
-        alert("An unexpected error occurred during the request.");
-        console.error("Fetch error:", error);
+    .catch(err => {
+        alert('❌ Unexpected error occurred.');
+        console.error(err);
     });
 }
-
 function openRequestItemModal(supplierID) {
     document.getElementById('requestSupplierID').value = supplierID;
     toggleModal('requestItemModal', true);
