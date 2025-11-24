@@ -158,19 +158,10 @@ $lastActivity = $latestSaleDate ? date('M d, Y', strtotime($latestSaleDate)) : d
                     <p class="text-sm text-gray-500 mt-2">Lifetime earnings</p>
                 </div>
 
-                <div class="bg-gray-900 p-6 rounded-2xl shadow-2xl border border-gray-800 hover:ring-1 hover:ring-yellow-500/40 transition">
-                    <div class="flex items-center justify-between text-gray-400 text-xs uppercase tracking-widest">
-                        <span>Average Order</span>
-                        <i data-lucide="chart-bar" class="text-yellow-400"></i>
-                    </div>
-                    <p class="text-5xl font-bold text-white mt-4">₱<?= number_format($averageOrder, 2); ?></p>
-                    <p class="text-sm text-gray-500 mt-2">Per transaction</p>
-                </div>
-
-                <div class="bg-red-900/50 p-6 rounded-2xl shadow-2xl transition duration-300 ring-4 ring-red-500/70 border-l-4 border-red-500">
+                <div class="<?php echo $lowStockCount > 0 ? 'bg-red-900/50 ring-4 ring-red-500/70 border-l-4 border-red-500' : 'bg-green-900/50 ring-4 ring-green-500/70 border-l-4 border-green-500'; ?> p-6 rounded-2xl shadow-2xl transition duration-300">
                     <div class="flex items-center justify-between">
-                        <div class="text-sm font-medium text-red-300 uppercase">Stock Alerts</div>
-                        <i data-lucide="alert-triangle" class="text-red-500"></i>
+                        <div class="text-sm font-medium <?php echo $lowStockCount > 0 ? 'text-red-300' : 'text-green-300'; ?> uppercase">Stock Alerts</div>
+                        <i data-lucide="<?php echo $lowStockCount > 0 ? 'alert-triangle' : 'check-circle'; ?>" class="<?php echo $lowStockCount > 0 ? 'text-red-500' : 'text-green-500'; ?>"></i>
                     </div>
                     <div class="mt-2">
                         <span class="text-5xl font-extrabold text-white"><?= $lowStockCount; ?></span>
@@ -183,17 +174,17 @@ $lastActivity = $latestSaleDate ? date('M d, Y', strtotime($latestSaleDate)) : d
                             <?php endforeach; ?>
                         </ul>
                     <?php else: ?>
-                        <p class="mt-2 text-sm text-red-200">All products above safety stock.</p>
+                        <p class="mt-2 text-sm text-green-200">All products above safety stock.</p>
                     <?php endif; ?>
                 </div>
 
-                <div class="bg-red-900/50 p-6 rounded-2xl shadow-2xl border border-red-700/40 hover:ring-1 hover:ring-red-500/40 transition">
-                    <div class="flex items-center justify-between text-red-200 text-xs uppercase tracking-widest">
+                <div class="bg-green-900/50 p-6 rounded-2xl shadow-2xl border border-green-700/40 hover:ring-1 hover:ring-green-500/40 transition">
+                    <div class="flex items-center justify-between text-green-200 text-xs uppercase tracking-widest">
                         <span>Today's Revenue</span>
-                        <i data-lucide="flame" class="text-red-300"></i>
+                        <i data-lucide="flame" class="text-green-300"></i>
                     </div>
                     <p class="text-4xl font-bold text-white mt-4">₱<?= number_format($todayRevenue, 2); ?></p>
-                    <p class="text-sm text-red-200 mt-2"><?= number_format($todayCount); ?> sales today</p>
+                    <p class="text-sm text-green-200 mt-2"><?= number_format($todayCount); ?> sales today</p>
                 </div>
             </section>
 
