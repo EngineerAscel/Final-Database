@@ -68,6 +68,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['login'])) {
             justify-content: center;
             padding: 1.5rem;
         }
+        /* Override login.css button gradient with solid red */
+        button[type="submit"] {
+            background: #dc2626 !important;
+            background-color: #dc2626 !important;
+            background-image: none !important;
+        }
+        button[type="submit"]:hover {
+            background: #b91c1c !important;
+            background-color: #b91c1c !important;
+            background-image: none !important;
+        }
     </style>
 </head>
 <body class="text-gray-100">
@@ -103,7 +114,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['login'])) {
                 <div class="relative">
                     <i data-lucide="lock" class="absolute left-4 top-3.5 text-gray-500 w-5 h-5"></i>
                     <input type="password" name="password" required
-                           class="w-full bg-slate-950/60 border border-gray-800 rounded-2xl py-3.5 pl-12 pr-4 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus-border-transparent transition"
+                           class="w-full bg-slate-950/60 border border-gray-800 rounded-2xl py-3.5 pl-12 pr-4 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition"
                            placeholder="••••••••">
                 </div>
             </div>
